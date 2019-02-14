@@ -2,17 +2,10 @@ package math
 
 import (
 	"errors"
-	"fmt"
+	"math"
 
 	"gonum.org/v1/gonum/mat"
 )
-
-// MatPrint - prints beautiful matrix/vector
-func MatPrint(X mat.Matrix) {
-	fa := mat.Formatted(X, mat.Prefix(""), mat.Squeeze())
-	// fmt.Printf("%.3f\n", fa)
-	fmt.Printf("%v\n", fa)
-}
 
 //Eye - create identity matrix
 func Eye(n int) *mat.Dense {
@@ -31,13 +24,17 @@ func CheckInverse(m1, m2 mat.Matrix) bool {
 		return false
 	}
 
-	D := mat.NewDense(3, 3, nil)
+	D := mat.NewDense(r1, r1, nil)
 	D.Product(m1, m2)
+	// println("Product")
+	// io.MatPrint(D)
+
+	eps := 1e-10
 	r, c := D.Dims()
 	for i := 0; i < r; i++ {
 		for j := 0; j < c; j++ {
 			row := D.RawRowView(i)
-			if (i == j && row[j] != 1) || (i != j && row[j] != 0) {
+			if (i == j && row[j] < 1-eps && row[i] > 1+eps) || (i != j && math.Abs(row[j]) > eps) {
 				return false
 			}
 		}

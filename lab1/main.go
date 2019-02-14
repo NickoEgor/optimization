@@ -8,6 +8,8 @@ import (
 	"strings"
 
 	"gonum.org/v1/gonum/mat"
+
+	io "labs/moiu"
 	c "labs/moiu/math"
 )
 
@@ -32,13 +34,13 @@ func getReplacingVector() *mat.VecDense {
 func main() {
 	A, Ai := getKnownMatrices()
 	println("Source matrix:")
-	c.MatPrint(A)
+	io.MatPrint(A)
 	println("Inversed matrix:")
-	c.MatPrint(Ai)
+	io.MatPrint(Ai)
 
 	vec := getReplacingVector()
 	println("Replacing vector:")
-	c.MatPrint(vec)
+	io.MatPrint(vec)
 
 	print("Enter column index: ")
 	reader := bufio.NewReader(os.Stdin)
@@ -56,5 +58,5 @@ func main() {
 		println(err)
 		os.Exit(1)
 	}
-	c.MatPrint(ans)
+	io.MatPrint(ans)
 }
