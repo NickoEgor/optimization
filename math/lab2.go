@@ -78,9 +78,11 @@ func SimplexMainPhase(A *mat.Dense, b, c, x, J *mat.VecDense) (*mat.VecDense, *m
 			return x, J, nil
 		}
 
-		for k := range deltas {
-			j0 = k
-			break
+		for k, v := range deltas {
+			if v < 0 {
+				j0 = k
+				break
+			}
 		}
 
 		z := mat.NewVecDense(rows, nil)

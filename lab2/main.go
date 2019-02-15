@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 
 	"gonum.org/v1/gonum/mat"
 
@@ -10,7 +11,14 @@ import (
 )
 
 func main() {
-	A, b, c, x, J := io.EnterConditions("conditions.txt")
+	var filename string
+	if len(os.Args) < 2 {
+		filename = "conditions.txt"
+	} else {
+		filename = os.Args[1]
+	}
+
+	A, b, c, x, J := io.EnterConditions(filename)
 	x, J, err := cm.SimplexMainPhase(A, b, c, x, J)
 	if err != nil {
 		fmt.Println(err)
