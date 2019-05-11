@@ -4,7 +4,6 @@ import (
 	"errors"
 	"math"
 
-	"gonum.org/v1/gonum/floats"
 	"gonum.org/v1/gonum/mat"
 )
 
@@ -21,10 +20,6 @@ func isBasisIndex(m *mat.VecDense, value int) (bool, int) {
 // SimplexMainPhase - main phase of simplex method
 func SimplexMainPhase(A *mat.Dense, b, c, x, J *mat.VecDense) (*mat.VecDense, *mat.VecDense, error) {
 	rows, cols := A.Dims()
-
-	for i := 0; i < rows; i++ {
-		J.SetVec(i, J.AtVec(i)-1)
-	}
 
 	isFirstIteration := true
 	var theta0idx, j0 int
@@ -64,9 +59,10 @@ func SimplexMainPhase(A *mat.Dense, b, c, x, J *mat.VecDense) (*mat.VecDense, *m
 		deltas := make(map[int]int)
 		isOptimized := true
 		for i := 0; i < cols; i++ {
-			res, _ := isBasisIndex(delta, i)
+			res, _ := isBasisIndex(J, i)
 			if !res {
 				value := delta.AtVec(i)
+				// println(i, value)
 				if value < 0 {
 					isOptimized = false
 				}
@@ -102,7 +98,16 @@ func SimplexMainPhase(A *mat.Dense, b, c, x, J *mat.VecDense) (*mat.VecDense, *m
 			return nil, nil, errors.New("Loss function is not limited from above")
 		}
 
-		theta0idx = int(floats.MinIdx(theta.RawVector().Data))
+		theta0idx = -1
+		for i := 0; i < rows; i++ {
+			if math.Abs(theta.AtVec(i)-theta0) < epsilon {
+				if theta0idx == -1 || int(J.AtVec(i)) < theta0idx {
+					theta0idx = i
+				}
+			}
+		}
+
+		// theta0idx = int(floats.MinIdx(theta.RawVector().Data))
 		J.SetVec(theta0idx, float64(j0))
 
 		for i := 0; i < cols; i++ {

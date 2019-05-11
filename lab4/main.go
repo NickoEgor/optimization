@@ -18,15 +18,9 @@ func main() {
 		filename = os.Args[1]
 	}
 
-	A, b, c, x, J := io.EnterConditions(filename)
+	A, b, c, y, J := io.EnterDualConditions(filename)
 
-	rows, _ := A.Dims()
-
-	for i := 0; i < rows; i++ {
-		J.SetVec(i, J.AtVec(i)-1)
-	}
-
-	x, J, err := cm.SimplexMainPhase(A, b, c, x, J)
+	x, J, err := cm.DualSimplex(A, b, c, y, J)
 	if err != nil {
 		fmt.Println(err)
 		return

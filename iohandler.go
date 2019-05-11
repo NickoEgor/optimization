@@ -124,3 +124,231 @@ func EnterConditions(filename string) (*mat.Dense, *mat.VecDense, *mat.VecDense,
 
 	return A, b, c, x, J
 }
+
+// EnterCommonConditions - reads conditions from file
+func EnterCommonConditions(filename string) (*mat.Dense, *mat.VecDense, *mat.VecDense) {
+	f, err := os.Open(filename)
+	checkError(err)
+	defer f.Close()
+
+	scanner := bufio.NewScanner(f)
+
+	// ignore 'A' line
+	scanner.Scan()
+	checkScanner(scanner)
+
+	scanner.Scan()
+	checkScanner(scanner)
+	sizeStr := strings.Split(scanner.Text(), " ")
+	rows, err := strconv.Atoi(sizeStr[0])
+	checkError(err)
+	cols, err := strconv.Atoi(sizeStr[1])
+	checkError(err)
+
+	A := mat.NewDense(rows, cols, nil)
+
+	for i := 0; i < rows && scanner.Scan(); i++ {
+		line := scanner.Text()
+		values := strings.Split(line, " ")
+		for j := 0; j < cols; j++ {
+			v, err := strconv.ParseFloat(values[j], 64)
+			checkError(err)
+			A.Set(i, j, v)
+		}
+	}
+	checkScanner(scanner)
+
+	// ignore 'b' line
+	scanner.Scan()
+	checkScanner(scanner)
+
+	scanner.Scan()
+	checkScanner(scanner)
+	b := mat.NewVecDense(rows, nil)
+	line := scanner.Text()
+	values := strings.Split(line, " ")
+	for i := 0; i < rows; i++ {
+		v, err := strconv.ParseFloat(values[i], 64)
+		checkError(err)
+		b.SetVec(i, v)
+	}
+
+	// ignore 'c' line
+	scanner.Scan()
+	checkScanner(scanner)
+
+	scanner.Scan()
+	checkScanner(scanner)
+	c := mat.NewVecDense(cols, nil)
+	line = scanner.Text()
+	values = strings.Split(line, " ")
+	for i := 0; i < cols; i++ {
+		v, err := strconv.ParseFloat(values[i], 64)
+		checkError(err)
+		c.SetVec(i, v)
+	}
+
+	return A, b, c
+}
+
+// EnterDualConditions - reads matrix from file
+func EnterDualConditions(filename string) (*mat.Dense, *mat.VecDense, *mat.VecDense, *mat.VecDense, *mat.VecDense) {
+	f, err := os.Open(filename)
+	checkError(err)
+	defer f.Close()
+
+	scanner := bufio.NewScanner(f)
+
+	// ignore 'A' line
+	scanner.Scan()
+	checkScanner(scanner)
+
+	scanner.Scan()
+	checkScanner(scanner)
+	sizeStr := strings.Split(scanner.Text(), " ")
+	rows, err := strconv.Atoi(sizeStr[0])
+	checkError(err)
+	cols, err := strconv.Atoi(sizeStr[1])
+	checkError(err)
+
+	A := mat.NewDense(rows, cols, nil)
+
+	for i := 0; i < rows && scanner.Scan(); i++ {
+		line := scanner.Text()
+		values := strings.Split(line, " ")
+		for j := 0; j < cols; j++ {
+			v, err := strconv.ParseFloat(values[j], 64)
+			checkError(err)
+			A.Set(i, j, v)
+		}
+	}
+	checkScanner(scanner)
+
+	// ignore 'b' line
+	scanner.Scan()
+	checkScanner(scanner)
+
+	scanner.Scan()
+	checkScanner(scanner)
+	b := mat.NewVecDense(rows, nil)
+	line := scanner.Text()
+	values := strings.Split(line, " ")
+	for i := 0; i < rows; i++ {
+		v, err := strconv.ParseFloat(values[i], 64)
+		checkError(err)
+		b.SetVec(i, v)
+	}
+
+	// ignore 'c' line
+	scanner.Scan()
+	checkScanner(scanner)
+
+	scanner.Scan()
+	checkScanner(scanner)
+	c := mat.NewVecDense(cols, nil)
+	line = scanner.Text()
+	values = strings.Split(line, " ")
+	for i := 0; i < cols; i++ {
+		v, err := strconv.ParseFloat(values[i], 64)
+		checkError(err)
+		c.SetVec(i, v)
+	}
+
+	// ignore 'y' line
+	scanner.Scan()
+	checkScanner(scanner)
+
+	scanner.Scan()
+	checkScanner(scanner)
+	y := mat.NewVecDense(rows, nil)
+	line = scanner.Text()
+	values = strings.Split(line, " ")
+	for i := 0; i < rows; i++ {
+		v, err := strconv.ParseFloat(values[i], 64)
+		checkError(err)
+		y.SetVec(i, v)
+	}
+
+	// ignore 'J' line
+	scanner.Scan()
+	checkScanner(scanner)
+
+	scanner.Scan()
+	checkScanner(scanner)
+	J := mat.NewVecDense(rows, nil)
+	line = scanner.Text()
+	values = strings.Split(line, " ")
+	for i := 0; i < rows; i++ {
+		v, err := strconv.Atoi(values[i])
+		checkError(err)
+		J.SetVec(i, float64(v))
+	}
+
+	return A, b, c, y, J
+}
+
+// EnterTransportConditions - reads conditions from file
+func EnterTransportConditions(filename string) (*mat.Dense, *mat.VecDense, *mat.VecDense) {
+	f, err := os.Open(filename)
+	checkError(err)
+	defer f.Close()
+
+	scanner := bufio.NewScanner(f)
+
+	// ignore 'Cost' line
+	scanner.Scan()
+	checkScanner(scanner)
+
+	scanner.Scan()
+	checkScanner(scanner)
+	sizeStr := strings.Split(scanner.Text(), " ")
+	rows, err := strconv.Atoi(sizeStr[0])
+	checkError(err)
+	cols, err := strconv.Atoi(sizeStr[1])
+	checkError(err)
+
+	cost := mat.NewDense(rows, cols, nil)
+
+	for i := 0; i < rows && scanner.Scan(); i++ {
+		line := scanner.Text()
+		values := strings.Split(line, " ")
+		for j := 0; j < cols; j++ {
+			v, err := strconv.ParseFloat(values[j], 64)
+			checkError(err)
+			cost.Set(i, j, v)
+		}
+	}
+	checkScanner(scanner)
+
+	// ignore 'Need' line
+	scanner.Scan()
+	checkScanner(scanner)
+
+	scanner.Scan()
+	checkScanner(scanner)
+	need := mat.NewVecDense(cols, nil)
+	line := scanner.Text()
+	values := strings.Split(line, " ")
+	for i := 0; i < cols; i++ {
+		v, err := strconv.ParseFloat(values[i], 64)
+		checkError(err)
+		need.SetVec(i, v)
+	}
+
+	// ignore 'Stock' line
+	scanner.Scan()
+	checkScanner(scanner)
+
+	scanner.Scan()
+	checkScanner(scanner)
+	stock := mat.NewVecDense(rows, nil)
+	line = scanner.Text()
+	values = strings.Split(line, " ")
+	for i := 0; i < rows; i++ {
+		v, err := strconv.ParseFloat(values[i], 64)
+		checkError(err)
+		stock.SetVec(i, v)
+	}
+
+	return cost, need, stock
+}
